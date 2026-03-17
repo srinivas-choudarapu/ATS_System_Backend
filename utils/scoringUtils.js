@@ -124,14 +124,14 @@ const calculateEducationScore = (resumeEdu, requiredEdu) => {
 
 
 
-console.log(calculateSkillScore(['javascript', 'node.js'], ['javascript', 'react', 'node.js'])); // 66.67
-console.log(calculateExperienceScore(5, 3)); // 100
-console.log(calculateExperienceScore(2, 4)); // 50
-console.log(calculateProjectScore(['Built a web app using React and Node.js'], ['react', 'node.js'])); // 100
-console.log(findMissingSkills(['javascript', 'node.js'], ['javascript', 'react', 'node.js'])); // ['react']
-console.log(calculateEducationScore('B.Tech in Computer Science', 'B.Tech')); // 100
-console.log(calculateEducationScore('M.Tech in Computer Science', 'Master')); // 100
-console.log(calculateEducationScore('High School Diploma', 'Bachelor')); // 0
+// console.log(calculateSkillScore(['javascript', 'node.js'], ['javascript', 'react', 'node.js'])); // 66.67
+// console.log(calculateExperienceScore(5, 3)); // 100
+// console.log(calculateExperienceScore(2, 4)); // 50
+// console.log(calculateProjectScore(['Built a web app using React and Node.js'], ['react', 'node.js'])); // 100
+// console.log(findMissingSkills(['javascript', 'node.js'], ['javascript', 'react', 'node.js'])); // ['react']
+// console.log(calculateEducationScore('B.Tech in Computer Science', 'B.Tech')); // 100
+// console.log(calculateEducationScore('M.Tech in Computer Science', 'Master')); // 100
+// console.log(calculateEducationScore('High School Diploma', 'Bachelor')); // 0
 module.exports = {
   calculateSkillScore,
   calculateExperienceScore,
