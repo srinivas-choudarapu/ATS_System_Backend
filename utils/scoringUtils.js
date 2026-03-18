@@ -121,8 +121,9 @@ const calculateEducationScore = (resumeEdu, requiredEdu) => {
   return Math.min(100, score);
 };
 
-
-
+const calculateKeywordsScore = (resumeText, jdText) => {
+     return 0;
+};
 
 // console.log(calculateSkillScore(['javascript', 'node.js'], ['javascript', 'react', 'node.js'])); // 66.67
 // console.log(calculateExperienceScore(5, 3)); // 100
@@ -137,5 +138,6 @@ module.exports = {
   calculateExperienceScore,
   calculateProjectScore,
   findMissingSkills,
-  calculateEducationScore
+  calculateEducationScore,
+  calculateKeywordsScore
 };

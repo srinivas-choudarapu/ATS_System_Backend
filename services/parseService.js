@@ -2,16 +2,54 @@ const extractTextFromPDF = require("../utils/extractText");
 
 
 const skillList = [
-  "javascript",
-  "react",
-  "node",
-  "express",
-  "mongodb",
-  "python",
-  "java",
-  "sql",
-  "aws",
-  "docker"
+  // 🌐 Programming Languages
+  "javascript","typescript","python","java","c","c++","cpp","c#","go","golang","rust","kotlin","swift","php","ruby","scala","dart","matlab",
+
+  // 🎨 Frontend
+  "html","html5","css","css3","sass","less","tailwind","bootstrap",
+  "react","reactjs","angular","angularjs","vue","vuejs","nextjs","next.js","nuxt","redux",
+
+  // ⚙️ Backend
+  "node","nodejs","express","expressjs","spring","springboot","django","flask","fastapi","laravel","rails","asp.net",
+
+  // 🗄️ Databases
+  "mongodb","mongo","mysql","postgres","postgresql","sqlite","redis","oracle","cassandra","dynamodb","firebase",
+
+  // ☁️ Cloud
+  "aws","amazon web services","gcp","google cloud","azure","digitalocean",
+
+  // 🐳 DevOps & Tools
+  "docker","kubernetes","k8s","jenkins","github actions","gitlab ci","terraform","ansible","nginx","apache",
+
+  // 🔐 Authentication / APIs
+  "rest","rest api","graphql","jwt","oauth","websockets",
+
+  // 🧠 Data & AI
+  "machine learning","ml","deep learning","dl","nlp","computer vision","tensorflow","pytorch","scikit-learn","pandas","numpy",
+
+  // 📊 Data Engineering / Analytics
+  "hadoop","spark","kafka","airflow","etl","data warehousing","bigquery","snowflake","tableau","powerbi",
+
+  // 🧪 Testing
+  "jest","mocha","chai","selenium","cypress","playwright","junit",
+
+  // 📱 Mobile
+  "android","ios","react native","flutter","xamarin","swiftui",
+
+  // 🧩 Architecture / Concepts
+  "microservices","monolith","restful","event-driven","system design","design patterns","oop","dsa","algorithms",
+
+  // 🔧 Version Control / Tools
+  "git","github","gitlab","bitbucket",
+
+  // 🔒 Security
+  "cybersecurity","encryption","ssl","tls","oauth2","penetration testing",
+
+  // 🖥️ OS / Platforms
+  "linux","unix","windows",
+
+  // 🧾 Others (common JD terms)
+  "agile","scrum","kanban","ci/cd","devops","debugging","performance optimization"
 ];
 
 const parseResume = (text) => {
