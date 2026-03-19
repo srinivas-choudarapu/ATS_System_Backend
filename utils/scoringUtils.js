@@ -202,9 +202,7 @@ const calculateKeywordsScore = (resumeText, jdText) => {
     ? 0
     : (matched.length / jdSkills.size) * 100;
 
-  return {
-    score: Math.round(score)
-  };
+  return score;
 };
 
 // console.log(calculateSkillScore(['javascript', 'node.js'], ['javascript', 'react', 'node.js'])); // 66.67

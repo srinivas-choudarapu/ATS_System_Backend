@@ -84,4 +84,19 @@ const runATSAnalysis = (resumeData, jdData) => {
   };
 };
 
+// console.log(runATSAnalysis(
+//   {
+//     skills: ['javascript', 'node.js'],
+//     experience: 2,
+//     education: 'B.Tech in Computer Science',
+//     projects: ['Built a web app using React and Node.js'],
+//     text: 'Experience with React, Node.js, and AWS'
+//   },
+//   {
+//     requiredSkills: ['javascript', 'react', 'node.js'],
+//     requiredExperience: 3,
+//     requiredEducation: 'B.Tech',
+//     text: 'Looking for React and AWS experience'
+//   }
+// ));
 module.exports = runATSAnalysis;
