@@ -121,8 +121,90 @@ const calculateEducationScore = (resumeEdu, requiredEdu) => {
   return Math.min(100, score);
 };
 
+//for keywords score
+const skillList = [
+  "javascript","typescript","python","java","c","c++","cpp","c#","go","golang","rust","kotlin","swift","php","ruby","scala","dart","matlab",
+
+  "html","html5","css","css3","sass","less","tailwind","bootstrap",
+  "react","angular","vue","nextjs","nuxt","redux",
+
+  "nodejs","express","spring","springboot","django","flask","fastapi","laravel","rails","aspnet",
+
+  "mongodb","mysql","postgresql","sqlite","redis","oracle","cassandra","dynamodb","firebase",
+
+  "aws","gcp","azure","digitalocean",
+
+  "docker","kubernetes","k8s","jenkins","githubactions","gitlabci","terraform","ansible","nginx","apache",
+
+  "rest","restapi","graphql","jwt","oauth","websockets",
+
+  "machinelearning","ml","deeplearning","dl","nlp","computervision","tensorflow","pytorch","scikitlearn","pandas","numpy",
+
+  "hadoop","spark","kafka","airflow","etl","datawarehousing","bigquery","snowflake","tableau","powerbi",
+
+  "jest","mocha","chai","selenium","cypress","playwright","junit",
+
+  "android","ios","reactnative","flutter","xamarin","swiftui",
+
+  "microservices","monolith","restful","eventdriven","systemdesign","designpatterns","oop","dsa","algorithms",
+
+  "git","github","gitlab","bitbucket",
+
+  "cybersecurity","encryption","ssl","tls","oauth2","penetrationtesting",
+
+  "linux","unix","windows",
+
+  "agile","scrum","kanban","cicd","devops","debugging","performanceoptimization"
+];
+const cleanWord = (word) => {
+  return word
+    .toLowerCase()
+    .replace(/[.\-\/]/g, "")   // remove ., -, /
+    .replace(/\s+/g, "");      // remove spaces
+};
+const normalizeText = (text) => {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s.\-/]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean)
+    .map(cleanWord);
+};
+const extractSkills = (text, skillSet) => {
+  const words = normalizeText(text);
+  const textStr = words.join(" ");
+
+  const foundSkills = new Set();
+
+  skillSet.forEach(skill => {
+    if (textStr.includes(skill)) {
+      foundSkills.add(skill);
+    }
+  });
+
+  return foundSkills;
+};
+
 const calculateKeywordsScore = (resumeText, jdText) => {
-     return 0;
+  const skillSet = new Set(skillList);
+
+  const resumeSkills = extractSkills(resumeText, skillSet);
+  const jdSkills = extractSkills(jdText, skillSet);
+
+  let matched = [];
+  jdSkills.forEach(skill => {
+    if (resumeSkills.has(skill)) {
+      matched.push(skill);
+    }
+  });
+
+  const score = jdSkills.size === 0
+    ? 0
+    : (matched.length / jdSkills.size) * 100;
+
+  return {
+    score: Math.round(score)
+  };
 };
 
 // console.log(calculateSkillScore(['javascript', 'node.js'], ['javascript', 'react', 'node.js'])); // 66.67
@@ -133,6 +215,7 @@ const calculateKeywordsScore = (resumeText, jdText) => {
 // console.log(calculateEducationScore('B.Tech in Computer Science', 'B.Tech')); // 100
 // console.log(calculateEducationScore('M.Tech in Computer Science', 'Master')); // 100
 // console.log(calculateEducationScore('High School Diploma', 'Bachelor')); // 0
+//console.log(calculateKeywordsScore('Experience with React, Node.js, and AWS', 'Looking for React and AWS experience')); // { score: 100 } 
 module.exports = {
   calculateSkillScore,
   calculateExperienceScore,
