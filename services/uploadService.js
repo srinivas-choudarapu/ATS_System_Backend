@@ -1,7 +1,8 @@
 const { PutObjectCommand, DeleteObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const s3 = require("../config/s3");
-const dotenv = require("dotenv").config();
+const path = require("path");
+require("dotenv").config(path.resolve(__dirname, "..", ".env"));
 
 const getBucketName = () => {
   if (!process.env.AWS_BUCKET_NAME) throw new Error("AWS_BUCKET_NAME is missing");
