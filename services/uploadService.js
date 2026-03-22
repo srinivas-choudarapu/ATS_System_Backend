@@ -63,7 +63,27 @@ const deleteFromS3 = async (fileKey) => {
 
 // 🔑 Extract key from URL (important for deletion)
 const getKeyFromUrl = (url) => {
-  return url.split(".amazonaws.com/")[1];
+  if (typeof url !== "string" || !url.trim()) return "";
+
+  try {
+    const parsed = new URL(url);
+    const bucket = process.env.AWS_BUCKET_NAME || "";
+
+    // pathname has no query string
+    // example: "/1774182099312-srinivasresume%20%283%29.pdf"
+    let key = parsed.pathname.replace(/^\/+/, "");
+
+    // if URL is path-style: /bucket-name/key
+    if (bucket && key.startsWith(bucket + "/")) {
+      key = key.slice(bucket.length + 1);
+    }
+
+    return decodeURIComponent(key);
+  } catch {
+    // fallback for malformed urls
+    const raw = url.split(".amazonaws.com/")[1] || "";
+    return decodeURIComponent(raw.split("?")[0]);
+  }
 };
 
 

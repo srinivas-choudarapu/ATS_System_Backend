@@ -34,7 +34,8 @@ const runATSAnalysis = (resumeData, jdData) => {
     resumeData.skills,
     jdData.requiredSkills
   );
-    const keywordsScore = calculateKeywordsScore(
+    const keywordsScore = 
+    calculateKeywordsScore(
     resumeData.text,
     jdData.text
   );
