@@ -64,6 +64,8 @@ const uploadResume = async (req, res) => {
         score: analysisResult.score,
         skill_score: analysisResult.skillScore,
         experience_score: analysisResult.experienceScore,
+        education_score: analysisResult.educationScore,
+        keyword_score: analysisResult.keywordsScore,
         project_score: analysisResult.projectScore,
         missing_skills: analysisResult.missingSkills,
         suggestions: analysisResult.suggestions
@@ -96,6 +98,123 @@ const uploadResume = async (req, res) => {
   }
 };
 
+
+
+//get all resumes for a user
+const getResumeHistory = async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("resumes")
+      .select("*")
+      .eq("user_id", req.user.id)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    res.json(data);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch resumes" });
+  }
+};
+
+
+//get resume by id
+const getResumeById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { data, error } = await supabase
+      .from("resumes")
+      .select("*")
+      .eq("id", id)
+      .eq("user_id", req.user.id)
+      .single();
+
+    if (error) {
+      return res.status(404).json({ error: "Resume not found" });
+    }
+
+    res.json(data);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error fetching resume" });
+  }
+};
+
+//delete resume by id
+const deleteResume = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { data: resume, error } = await supabase
+      .from("resumes")
+      .select("*")
+      .eq("id", id)
+      .eq("user_id", req.user.id)
+      .single();
+
+    if (error) {
+      return res.status(404).json({ error: "Resume not found" });
+    }
+
+    // delete from S3
+    const key = getKeyFromUrl(resume.file_url);
+    await deleteFromS3(key);
+
+    // delete from DB
+    await supabase.from("resumes").delete().eq("id", id);
+
+    res.json({ message: "Deleted successfully" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Delete failed" });
+  }
+};
+
+//delete all resumes for a user
+const deleteAllResumes = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // 1️⃣ Get all resumes of user
+    const { data: resumes, error } = await supabase
+      .from("resumes")
+      .select("*")
+      .eq("user_id", userId);
+
+    if (error) throw error;
+
+    // 2️⃣ Delete all files from S3
+    for (const resume of resumes) {
+      try {
+        const key = getKeyFromUrl(resume.file_url);
+        await deleteFromS3(key);
+      } catch (err) {
+        console.error("S3 delete error:", err);
+      }
+    }
+
+    // 3️⃣ Delete all from DB
+    await supabase
+      .from("resumes")
+      .delete()
+      .eq("user_id", userId);
+
+    res.json({ message: "All resumes deleted successfully" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete all resumes" });
+  }
+};
 module.exports = {
-  uploadResume
+  uploadResume,
+  getResumeHistory,
+  getResumeById,
+  deleteResume,
+  deleteAllResumes
 };

@@ -1,33 +1,48 @@
 const express = require("express");
 const multer = require("multer");
-const { uploadToS3 } = require("../services/uploadService");
-const supabase = require("../config/supabaseClient");
 const router = express.Router();
-const uploadResume = require("../controllers/resumeController").uploadResume;
 const upload = multer({ storage: multer.memoryStorage() });
+const authMiddleware = require("../middleware/authMiddleware");
+const { 
+  uploadResume, 
+  getResumeHistory, 
+  getResumeById, 
+  deleteResume, 
+  deleteAllResumes
+} = require("../controllers/resumeController");
 
+//upload resume and run analysis
 router.post(
   "/upload",
   upload.single("resume"),
   uploadResume
 );
 
-router.get("/test", async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from("resumes")
-      .select("*")
-      .limit(1);
+//get resume history for logged in user
+router.get(
+  "/history", 
+  authMiddleware, 
+  getResumeHistory
+);
 
-    if (error) {
-      console.error("Error:", error.message);
-    } else {
-      console.log("✅ Supabase connected successfully");
-      console.log("Data:", data);
-    }
-  } catch (err) {
-    console.error("Unexpected error:", err);
-  }
-});
+//get specific resume and analysis by ID (only if belongs to user)
+router.get("/:id", 
+  authMiddleware, 
+  getResumeById
+);
+
+//delete specific resume (only if belongs to user)
+router.delete(
+  "/:id",
+  authMiddleware,
+  deleteResume
+);
+
+//dlete all resumes for a user
+router.delete(
+  "/all",
+  authMiddleware,
+  deleteAllResumes
+);
 
 module.exports = router;
