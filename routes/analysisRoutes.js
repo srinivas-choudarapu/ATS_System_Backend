@@ -4,7 +4,12 @@ const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 const {
   runAnalysis,
-  getAnalysisById
+  getAnalysisById,
+  deleteAnalysis,
+  deleteAnalysisByResumeId,
+  getAnalysisByResumeId,
+  getJDByAnalysisId,
+  getAllJDByResumeId
 } = require("../controllers/analysisController");
 
 
