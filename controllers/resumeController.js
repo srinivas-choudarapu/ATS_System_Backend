@@ -32,7 +32,19 @@ const uploadResume = async (req, res) => {
     const analysisResult = runATSAnalysis(resumeData, jdData);
 
     // 5. Check if user logged in
-    const user = req.user; // only exists if middleware used elsewhere
+    // const user = req.user; // only exists if middleware used elsewhere
+
+    let user = null;
+
+const token = req.cookies?.token;
+
+if (token) {
+  const { data, error } = await supabase.auth.getUser(token);
+
+  if (!error && data.user) {
+    user = data.user;
+  }
+}
 
    
     //CASE 1: LOGGED IN USER
@@ -179,6 +191,7 @@ const deleteResume = async (req, res) => {
 const deleteAllResumes = async (req, res) => {
   try {
     const userId = req.user.id;
+    
 
     // 1️⃣ Get all resumes of user
     const { data: resumes, error } = await supabase
