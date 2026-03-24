@@ -36,6 +36,17 @@ const runAnalysis = async (req, res) => {
     //  Run ATS engine
     const result = runATSAnalysis(resumeData, jdData);
 
+    //store in resume_metadata table for easy acces overrite it if exists
+    await supabase
+      .from("resume_metadata")
+      .upsert({
+        resume_id: resumeId,
+        skills: resumeData.skills,
+        experience: resumeData.experience,
+        education: resumeData.education,
+        projects: resumeData.projects
+      });
+
     //  Store new analysis (DO NOT overwrite)
     const { data: analysis } = await supabase
       .from("analysis")

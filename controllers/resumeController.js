@@ -83,6 +83,14 @@ if (token) {
         suggestions: analysisResult.suggestions
       });
 
+      await supabase.from("resume_metadata").insert({
+        resume_id: resume.id,
+        skills: resumeData.skills,
+        experience: resumeData.experience,
+        education: resumeData.education,
+        projects: resumeData.projects
+      });
+
       return res.json({
         message: "Stored successfully",
         analysis: analysisResult
