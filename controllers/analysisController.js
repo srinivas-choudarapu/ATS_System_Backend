@@ -1,6 +1,8 @@
 const supabase = require("../config/supabaseClient");
 const { parseResume, parseJD } = require("../services/parseService");
 const runATSAnalysis = require("../services/atsEngineService");
+const { urlencoded } = require("express");
+urlencoded({ extended: true });
 
 
 //  Run analysis for existing resume
@@ -19,7 +21,7 @@ const runAnalysis = async (req, res) => {
       .from("resumes")
       .select("*")
       .eq("id", resumeId)
-      .eq("user_id", req.user.id)
+      // .eq("user_id", req.user.id)
       .single();
 
     if (error || !resume) {

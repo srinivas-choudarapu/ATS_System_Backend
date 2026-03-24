@@ -7,33 +7,24 @@ const supabase = createClient(
 
 const authMiddleware = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    const token = req.cookies.token;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({
-        error: "No token provided"
-      });
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
-
-    const token = authHeader.split(" ")[1];
 
     const { data, error } = await supabase.auth.getUser(token);
 
     if (error || !data.user) {
-      return res.status(401).json({
-        error: "Invalid or expired token"
-      });
+      return res.status(401).json({ error: "Invalid token" });
     }
 
-    // attach user to request
     req.user = data.user;
 
     next();
+
   } catch (err) {
-    console.error("Auth error:", err);
-    return res.status(500).json({
-      error: "Authentication failed"
-    });
+    res.status(500).json({ error: "Auth failed" });
   }
 };
 
