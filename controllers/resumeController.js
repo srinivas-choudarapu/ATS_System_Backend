@@ -136,7 +136,6 @@ const getResumeHistory = async (req, res) => {
 const getResumeById = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("Fetching resume with ID:", id, "for user:", req.user.id);
 
     const { data, error } = await supabase
       .from("resumes")
