@@ -6,7 +6,7 @@ ats project initial description
 get api/resume/history -get all resumes
 get api/resume/:id -get resume based on id
 delete api/resume/:id -delete resume based on id
-delete api/resume/delete -delete all resumes
+delete api/resume/all -delete all resumes
 post api/resume/upload -upload resume to s3, call ats and if(user) upload to supabase else give score and delete from s3
 
 .>Analysis_Routes
