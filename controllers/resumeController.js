@@ -70,7 +70,7 @@ if (token) {
         .single();
 
       // store analysis
-      await supabase.from("analysis").insert({
+      const { data: analysis } = await supabase.from("analysis").insert({
         resume_id: resume.id,
         jd_text: jdText,
         score: analysisResult.score,
@@ -81,6 +81,16 @@ if (token) {
         project_score: analysisResult.projectScore,
         missing_skills: analysisResult.missingSkills,
         suggestions: analysisResult.suggestions
+      })
+      .select().single();
+
+      // store JD
+      await supabase.from("jd_parsed").insert({
+        analysis_id: analysis.id, 
+        required_skills: jdData.requiredSkills,
+        optional_skills: jdData.optionalSkills,
+        required_experience: jdData.requiredExperience,
+        education_required: jdData.educationRequired
       });
 
       return res.json({

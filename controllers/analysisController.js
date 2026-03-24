@@ -54,6 +54,15 @@ const runAnalysis = async (req, res) => {
       .select()
       .single();
 
+      await supabase.from("jd_parsed").insert({
+        analysis_id: analysis.id,   
+        required_skills: jdData.requiredSkills,
+        optional_skills: jdData.optionalSkills,
+        required_experience: jdData.requiredExperience,
+        education_required: jdData.educationRequired
+      });
+
+
     return res.json({
       message: "Analysis completed",
       analysis
