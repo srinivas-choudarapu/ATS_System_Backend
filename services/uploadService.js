@@ -13,6 +13,12 @@ const getBucketName = () => {
 const uploadToS3 = async (file) => {
   try {
     const bucket = getBucketName();
+    const region = process.env.AWS_REGION;
+
+    if (!file || !file.buffer) {
+      throw new Error("File or buffer missing");
+    }
+
     const fileKey = Date.now() + "-" + file.originalname;
 
     const command = new PutObjectCommand({
@@ -22,23 +28,17 @@ const uploadToS3 = async (file) => {
       ContentType: file.mimetype,
     });
 
+    // 🔴 THIS is where your failure is happening
     await s3.send(command);
 
-    const getCommand = new GetObjectCommand({
-      Bucket: bucket,
-      Key: fileKey,
-    });
+    // ✅ Only runs if upload succeeds
+    const publicUrl = `https://${bucket}.s3.${region}.amazonaws.com/${fileKey}`;
 
-    const signedUrl = await getSignedUrl(s3, getCommand, { expiresIn: 3600 });
+    return { fileUrl: publicUrl, fileKey };
 
-    return { fileUrl: signedUrl, fileKey };
   } catch (error) {
-    console.error("S3 Upload Error:", {
-      name: error.name,
-      message: error.message,
-      metadata: error.$metadata,
-    });
-    throw new Error("Failed to upload file: " + (error.message || "Unknown S3 error"));
+    console.error("S3 Upload Error FULL:", error); // log full error, not partial
+    throw new Error("Failed to upload file: " + error.message);
   }
 };
 

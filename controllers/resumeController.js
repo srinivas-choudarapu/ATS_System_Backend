@@ -36,7 +36,7 @@ const uploadResume = async (req, res) => {
 
     let user = null;
 
-const token = req.cookies?.token;
+const token = req.cookies?.access_token;
 
 if (token) {
   const { data, error } = await supabase.auth.getUser(token);
