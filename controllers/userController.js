@@ -12,7 +12,10 @@ const signup = async (req, res) => {
 
     const { data, error } = await supabase.auth.signUp({
       email,
-      password
+      password,
+      options: {
+        emailRedirectTo: `${process.env.FRONTEND_URL}/verify`
+      }
     });
 
     if (error) {
