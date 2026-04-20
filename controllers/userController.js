@@ -8,7 +8,7 @@ const sendPasswordEmail = require("../services/emailService");
 // SIGNUP
 const signup = async (req, res) => {
   try {
-    const { email, password} = req.body;
+    const { email, password } = req.body;
 
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -50,16 +50,16 @@ const login = async (req, res) => {
     // access set cookie
     res.cookie("access_token", data.session.access_token, {
       httpOnly: true,
-      secure: false, // true in production (HTTPS)
-      sameSite: "lax",
+      secure: true, // true in production (HTTPS)
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
 
     // refresh token cookie
-     res.cookie("refresh_token", data.session.refresh_token, {
+    res.cookie("refresh_token", data.session.refresh_token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
