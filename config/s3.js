@@ -1,6 +1,6 @@
 const { S3Client } = require("@aws-sdk/client-s3");
 
-const required = ["AWS_REGION", "AWS_ACCESS_KEY", "AWS_SECRET_KEY", "AWS_BUCKET_NAME"];
+const required = ["R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME"];
 const missing = required.filter((k) => !process.env[k]);
 
 if (missing.length) {
@@ -8,10 +8,11 @@ if (missing.length) {
 }
 
 const s3 = new S3Client({
-  region: process.env.AWS_REGION,
+  region: "auto",
+  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_KEY,
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
   },
 });
 

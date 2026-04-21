@@ -5,15 +5,14 @@ const path = require("path");
 require("dotenv").config(path.resolve(__dirname, "..", ".env"));
 
 const getBucketName = () => {
-  if (!process.env.AWS_BUCKET_NAME) throw new Error("AWS_BUCKET_NAME is missing");
-  return process.env.AWS_BUCKET_NAME;
+  if (!process.env.R2_BUCKET_NAME) throw new Error("R2_BUCKET_NAME is missing");
+  return process.env.R2_BUCKET_NAME;
 };
 
-// 📤 Upload file to S3
+// 📤 Upload file to R2
 const uploadToS3 = async (file) => {
   try {
     const bucket = getBucketName();
-    const region = process.env.AWS_REGION;
 
     if (!file || !file.buffer) {
       throw new Error("File or buffer missing");
@@ -28,22 +27,27 @@ const uploadToS3 = async (file) => {
       ContentType: file.mimetype,
     });
 
-    // 🔴 THIS is where your failure is happening
     await s3.send(command);
 
-    // ✅ Only runs if upload succeeds
-    const publicUrl = `https://${bucket}.s3.${region}.amazonaws.com/${fileKey}`;
+    // ✅ For R2 we use a public domain to serve files
+    // You should add R2_PUBLIC_URL in your .env (e.g. https://pub-xxxxxx.r2.dev)
+    const publicDomain = process.env.R2_PUBLIC_URL;
+    if (!publicDomain) throw new Error("R2_PUBLIC_URL is missing from env. Please provide your R2 public bucket URL.");
+
+    // remove trailing slash if any
+    const baseUrl = publicDomain.replace(/\/$/, "");
+    const publicUrl = `${baseUrl}/${fileKey}`;
 
     return { fileUrl: publicUrl, fileKey };
 
   } catch (error) {
-    console.error("S3 Upload Error FULL:", error); // log full error, not partial
+    console.error("R2 Upload Error FULL:", error);
     throw new Error("Failed to upload file: " + error.message);
   }
 };
 
 
-// 🗑 Delete file from S3
+// 🗑 Delete file from R2
 const deleteFromS3 = async (fileKey) => {
   try {
     const bucket = getBucketName();
@@ -55,7 +59,7 @@ const deleteFromS3 = async (fileKey) => {
     await s3.send(command);
 
   } catch (error) {
-    console.error("S3 Delete Error:", error);
+    console.error("R2 Delete Error:", error);
     throw new Error("Failed to delete file");
   }
 };
@@ -67,21 +71,14 @@ const getKeyFromUrl = (url) => {
 
   try {
     const parsed = new URL(url);
-    const bucket = process.env.AWS_BUCKET_NAME || "";
-
-    // pathname has no query string
-    // example: "/1774182099312-srinivasresume%20%283%29.pdf"
+    // For R2 public URLs, the key is usually the pathname itself
+    // e.g., https://pub-12345.r2.dev/163212345-resume.pdf -> 163212345-resume.pdf
     let key = parsed.pathname.replace(/^\/+/, "");
-
-    // if URL is path-style: /bucket-name/key
-    if (bucket && key.startsWith(bucket + "/")) {
-      key = key.slice(bucket.length + 1);
-    }
-
+    
     return decodeURIComponent(key);
   } catch {
     // fallback for malformed urls
-    const raw = url.split(".amazonaws.com/")[1] || "";
+    const raw = url.split("/").pop() || "";
     return decodeURIComponent(raw.split("?")[0]);
   }
 };
